@@ -15,21 +15,21 @@ const displayTools = tools => {
                         <img src="${tool.image}" class="card-img-top" alt="...">
                         <div class="card-body">
                             <h5 class="card-title">Features</h5>
-                            <ol>1. Natural language processing</ol>
-                            <ol>2. Contextual understanding</ol>
-                            <ol>3. Text generation</ol>
+                            <ol>1. ${tool.features[0]}</ol>
+                            <ol>2. ${tool.features[1]}</ol>
+                            <ol>3. ${tool.features[2]}</ol>
                             <hr>
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h5>ChatGPT</h5>
-                                    <h6>11/01/2022</h6>
+                                    <h5>${tool.name}</h5>
+                                    <h6><img src = "Images/calander.svg" class = "px-1">${tool.published_in}</h6>
                                 </div>
-                                <button>hell</button>
+                                <button class= "border border-0 rounded-circle px-4"><img src = "Images/right arrow.svg"></button>
                             </div>
                         </div>
                     </div>
                             `;
-                        toolsContainer.appendChild(toolsDiv)  
+        toolsContainer.appendChild(toolsDiv)
     })
 }
 
