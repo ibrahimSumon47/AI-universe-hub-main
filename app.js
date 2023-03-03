@@ -12,6 +12,8 @@ const loadTools = async (dataLimit) => {
 const displayTools = (tools, dataLimit) => {
 
     const toolsContainer = document.getElementById("tools-container");
+
+    toolsContainer.innerHTML = "";
     
     const seeMoreSection = document.getElementById("see-more-section");
 
@@ -71,6 +73,9 @@ const singleData = async (id) => {
     const data2 = await res.json();
     console.log(data2.data);
 }
+
+
+
 //* see more button event handler
 document.getElementById("see-more").addEventListener("click", function () {
     toggleSpinner(true);
