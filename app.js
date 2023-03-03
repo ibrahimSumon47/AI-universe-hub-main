@@ -1,18 +1,27 @@
+// Tools
+
 const loadTools = async (dataLimit) => {
     const url = `https://openapi.programming-hero.com/api/ai/tools`
     const res = await fetch(url);
     const data = await res.json();
     displayTools(data.data.tools, dataLimit)
-
-    
 }
 
 
-const displayTools = tools => {
 
-    
+const displayTools = (tools, dataLimit) => {
 
     const toolsContainer = document.getElementById("tools-container");
+    
+    const seeMoreSection = document.getElementById("see-more-section");
+
+    if (tools.length > 6 && dataLimit) {
+        tools = tools.slice(0, 6);
+        seeMoreSection.classList.remove("d-none");
+      } else {
+        seeMoreSection.classList.add("d-none");
+      }
+
     tools.forEach(tool => {
         const toolsDiv = document.createElement("div");
         toolsDiv.classList.add("col");
@@ -30,7 +39,7 @@ const displayTools = tools => {
                                     <h5>${tool.name}</h5>
                                     <h6><img src = "Images/calander.svg" class = "px-1">${tool.published_in}</h6>
                                 </div>
-                                <button id = "toolsModal" class = "border border-0 rounded-circle px-4"><img src = "Images/right arrow.svg"></button>
+                                <button data-bs-toggle="modal" data-bs-target="#modalCardHub" onclick = "singleData("${tool.id}")" id = "toolsModal" class = "border border-0 rounded-circle px-4"><img src = "Images/right arrow.svg"></button>
                             </div>
                         </div>
                     </div>
@@ -40,6 +49,7 @@ const displayTools = tools => {
 
     toggleSpinner(false);
 }
+
 
 // Loader
 
@@ -53,7 +63,21 @@ const toggleSpinner = isLoading => {
     }
 }
 
+// Single data details
+
+const singleData = async (id) => {
+    const url2 = `https://openapi.programming-hero.com/api/ai/tool/${id}`
+    const res = await fetch(url2);
+    const data2 = await res.json();
+    console.log(data2.data);
+}
+//* see more button event handler
+document.getElementById("see-more").addEventListener("click", function () {
+    toggleSpinner(true);
+    loadTools();
+  });
+
 toggleSpinner(true);
 
-loadTools();
+loadTools(6);
 
