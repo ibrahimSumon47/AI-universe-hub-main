@@ -1,18 +1,24 @@
-const loadTools = async () => {
+const loadTools = async (dataLimit) => {
     const url = `https://openapi.programming-hero.com/api/ai/tools`
     const res = await fetch(url);
     const data = await res.json();
-    displayTools(data.data.tools)
+    displayTools(data.data.tools, dataLimit)
+
+    
 }
 
+
 const displayTools = tools => {
+
+    
+
     const toolsContainer = document.getElementById("tools-container");
     tools.forEach(tool => {
         const toolsDiv = document.createElement("div");
         toolsDiv.classList.add("col");
         toolsDiv.innerHTML = `
         <div class="card h-100">
-                        <img src="${tool.image}" class="card-img-top" alt="...">
+                        <img src="${tool.image}" class="card-img-top h-50" alt="...">
                         <div class="card-body">
                             <h5 class="card-title">Features</h5>
                             <ol>1. ${tool.features[0]}</ol>
@@ -24,13 +30,30 @@ const displayTools = tools => {
                                     <h5>${tool.name}</h5>
                                     <h6><img src = "Images/calander.svg" class = "px-1">${tool.published_in}</h6>
                                 </div>
-                                <button class= "border border-0 rounded-circle px-4"><img src = "Images/right arrow.svg"></button>
+                                <button id = "toolsModal" class = "border border-0 rounded-circle px-4"><img src = "Images/right arrow.svg"></button>
                             </div>
                         </div>
                     </div>
                             `;
         toolsContainer.appendChild(toolsDiv)
     })
+
+    toggleSpinner(false);
 }
 
+// Loader
+
+const toggleSpinner = isLoading => {
+    const loaderSection = document.getElementById("loader");
+    if (isLoading) {
+        loaderSection.classList.remove("d-none");
+    }
+    else {
+        loaderSection.classList.add("d-none");
+    }
+}
+
+toggleSpinner(true);
+
 loadTools();
+
