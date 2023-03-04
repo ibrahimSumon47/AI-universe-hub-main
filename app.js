@@ -1,17 +1,25 @@
-//! Tools
+// ! Global Variables
 
-const loadTools = async (dataLimit) => {
+let fetchData = [];
+
+//! Tools API
+
+const loadToolsApi = async (dataLimit) => {
   const url = `https://openapi.programming-hero.com/api/ai/tools`;
   const res = await fetch(url);
   const data = await res.json();
   fetchData = data.data.tools;
-  displayTools(data.data.tools, dataLimit);
+  displayApiTools(data.data.tools, dataLimit);
 };
 
-const displayTools = (tools, dataLimit) => {
+// ! Display Data
+
+const displayApiTools = (tools, dataLimit) => {
   const toolsContainer = document.getElementById("tools-container");
 
   toolsContainer.innerHTML = "";
+
+  // ! Display 6 Card
 
   const seeMoreSection = document.getElementById("see-more");
 
@@ -21,6 +29,8 @@ const displayTools = (tools, dataLimit) => {
   } else {
     seeMoreSection.classList.add("d-none");
   }
+
+  // ! Display All Card
 
   tools.forEach((tool) => {
     const toolsDiv = document.createElement("div");
@@ -36,7 +46,9 @@ const displayTools = (tools, dataLimit) => {
                             <li>${tool.features[0]}</li>
                             <li>${tool.features[1]}</li>
                             <li>${
-                              tool.features[2] ? tool.features[2] : "No Data"
+                              tool.features[2]
+                                ? tool.features[2]
+                                : "No Data Found"
                             }</li>
                             </ol>
                             <hr>
@@ -47,7 +59,7 @@ const displayTools = (tools, dataLimit) => {
                                       tool.published_in
                                     }
                                 </div>
-                                <button data-bs-toggle="modal" data-bs-target="#modalCardHub" onclick = "dataDetails('${
+                                <button data-bs-toggle="modal" data-bs-target="#modalCardHub" onclick = "apiDataDetails('${
                                   tool.id
                                 }')" id = "toolsModal" class = "border border-0 rounded-circle px-4"><img src = "Images/right arrow.svg"></button>
                             </div>
@@ -60,13 +72,13 @@ const displayTools = (tools, dataLimit) => {
   toggleSpinner(false);
 };
 
-//! see more button event handler
+//! See More Button Event Handler
 document.getElementById("btn-see-more").addEventListener("click", function () {
   toggleSpinner(true);
-  loadTools();
+  loadToolsApi();
 });
 
-//! Loader
+//! Loader or Spinner
 
 const toggleSpinner = (isLoading) => {
   const loaderSection = document.getElementById("loader");
@@ -79,14 +91,14 @@ const toggleSpinner = (isLoading) => {
 
 //! Single data details
 
-const dataDetails = async (id) => {
+const apiDataDetails = async (id) => {
   const url = `https://openapi.programming-hero.com/api/ai/tool/${id}`;
   const res = await fetch(url);
   const data = await res.json();
-  displayDataDetails(data.data);
+  displayApiDataDetails(data.data);
 };
 
-const displayDataDetails = (tool) => {
+const displayApiDataDetails = (tool) => {
   const modalContainer = document.getElementById("modal-container");
 
   modalContainer.innerHTML = `
@@ -159,24 +171,24 @@ const displayDataDetails = (tool) => {
                                                 </div>
                                                 <div>
                                                     <h4>Integrations</h4>
-                                                    <ul>
+                                                    <ul class="text-dark-emphasis"> 
                                                         <li>${
-                                                          tool.integrations[0]
+                                                          tool.integrations
                                                             ? tool
                                                                 .integrations[0]
-                                                            : "No Data"
+                                                            : "No Data Found"
                                                         }</li>
                                                         <li>${
-                                                          tool.integrations[1]
+                                                          tool.integrations
                                                             ? tool
                                                                 .integrations[1]
-                                                            : "No Data"
+                                                            : "No Data Found"
                                                         }</li>
                                                         <li>${
-                                                          tool.integrations[2]
+                                                          tool.integrations
                                                             ? tool
                                                                 .integrations[2]
-                                                            : "No Data"
+                                                            : "No Data Found"
                                                         }</li>
                                                     </ul>
                                                 </div>
@@ -190,7 +202,10 @@ const displayDataDetails = (tool) => {
                                             }" class="card-img-top" alt="...">
                                             <div class="card-body">
                                             <button id = "btn-accuracy" class = "position-absolute top-0 end-0 px-5 bg-danger text-light my-3 mx-2 p-1 rounded-2 ${
-                                              tool.accuracy.score === null || tool.accuracy.score < 0 ? "d-none" : ""
+                                              tool.accuracy.score === null ||
+                                              tool.accuracy.score < 0
+                                                ? "d-none"
+                                                : ""
                                             }">
                                             ${
                                               tool.accuracy.score
@@ -198,19 +213,18 @@ const displayDataDetails = (tool) => {
                                                 : ""
                                             }% Accuracy</button>
                                                 <h5 class="card-title">${
-                                                  tool.input_output_examples[0]
-                                                    
+                                                  tool.input_output_examples
                                                     ? tool
                                                         .input_output_examples[0]
                                                         .input
-                                                    : "No Data"
+                                                    : "No Data Found"
                                                 }</h5>
                                                 <p class="card-text">${
                                                   tool.input_output_examples
                                                     ? tool
                                                         .input_output_examples[0]
                                                         .output
-                                                    : "No Data"
+                                                    : "No Data Found"
                                                 }</p>
                                             </div>
                                         </div>
@@ -219,28 +233,24 @@ const displayDataDetails = (tool) => {
     `;
 };
 
-
 // ! Data Sorting by Date
 
 const sortingDate = (a, b) => {
-  const dateA = new Date (a.published_in);
-  const dateB = new Date (b.published_in);
-  if (dateA > dateB){
+  const dateA = new Date(a.published_in);
+  const dateB = new Date(b.published_in);
+  if (dateA > dateB) {
     return 1;
-  }
-  else if (dateA < dateB){
+  } else if (dateA < dateB) {
     return -1;
-  }
-  else {
+  } else {
     return 0;
   }
 };
 
-document.getElementById("sorting-date").addEventListener("click", function(){
-  displayTools(fetchData.sort(sortingDate));
+document.getElementById("sorting-date").addEventListener("click", function () {
+  displayApiTools(fetchData.sort(sortingDate));
 });
-
 
 toggleSpinner(true);
 
-loadTools(6);
+loadToolsApi(6);
