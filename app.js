@@ -1,9 +1,10 @@
-// Tools
+//! Tools
 
 const loadTools = async (dataLimit) => {
   const url = `https://openapi.programming-hero.com/api/ai/tools`;
   const res = await fetch(url);
   const data = await res.json();
+  fetchData = data.data.tools;
   displayTools(data.data.tools, dataLimit);
 };
 
@@ -12,7 +13,7 @@ const displayTools = (tools, dataLimit) => {
 
   toolsContainer.innerHTML = "";
 
-  const seeMoreSection = document.getElementById("see-more-section");
+  const seeMoreSection = document.getElementById("see-more");
 
   if (tools.length > 6 && dataLimit) {
     tools = tools.slice(0, 6);
@@ -31,15 +32,13 @@ const displayTools = (tools, dataLimit) => {
                         }" class="card-img-top h-50" alt="...">
                         <div class="card-body">
                             <h5 class="card-title">Features</h5>
-                            <ol>1. ${
-                              tool.features[0] ? tool.features[0] : "No Data"
-                            }</ol>
-                            <ol>2. ${
-                              tool.features[1] ? tool.features[1] : "No Data"
-                            }</ol>
-                            <ol>3. ${
+                            <ol class="card-text ps-4">
+                            <li>${tool.features[0]}</li>
+                            <li>${tool.features[1]}</li>
+                            <li>${
                               tool.features[2] ? tool.features[2] : "No Data"
-                            }</ol>
+                            }</li>
+                            </ol>
                             <hr>
                             <div class="d-flex justify-content-between">
                                 <div>
@@ -48,7 +47,7 @@ const displayTools = (tools, dataLimit) => {
                                       tool.published_in
                                     }
                                 </div>
-                                <button data-bs-toggle="modal" data-bs-target="#modalCardHub" onclick = "singleData('${
+                                <button data-bs-toggle="modal" data-bs-target="#modalCardHub" onclick = "dataDetails('${
                                   tool.id
                                 }')" id = "toolsModal" class = "border border-0 rounded-circle px-4"><img src = "Images/right arrow.svg"></button>
                             </div>
@@ -61,7 +60,13 @@ const displayTools = (tools, dataLimit) => {
   toggleSpinner(false);
 };
 
-// Loader
+//! see more button event handler
+document.getElementById("btn-see-more").addEventListener("click", function () {
+  toggleSpinner(true);
+  loadTools();
+});
+
+//! Loader
 
 const toggleSpinner = (isLoading) => {
   const loaderSection = document.getElementById("loader");
@@ -72,16 +77,16 @@ const toggleSpinner = (isLoading) => {
   }
 };
 
-// Single data details
+//! Single data details
 
-const singleData = async (id) => {
+const dataDetails = async (id) => {
   const url = `https://openapi.programming-hero.com/api/ai/tool/${id}`;
   const res = await fetch(url);
   const data = await res.json();
-  displayIDs(data.data);
+  displayDataDetails(data.data);
 };
 
-const displayIDs = (tool) => {
+const displayDataDetails = (tool) => {
   const modalContainer = document.getElementById("modal-container");
 
   modalContainer.innerHTML = `
@@ -96,40 +101,40 @@ const displayIDs = (tool) => {
                                                 <div class="d-flex justify-content-sm-evenly ">
                                                     <button class="btn w-50 py-3 px-2  fs-6 lh-1 fw-bold rounded-3 bg-white text-success ">
                                                     <p>${
-                                                      tool.pricing[0].price
+                                                      tool.pricing
                                                         ? tool.pricing[0].price
-                                                        : "No Data"
+                                                        : "Free"
                                                     }</p>
                                                     <p>${
-                                                      tool.pricing[0].plan
+                                                      tool.pricing
                                                         ? tool.pricing[0].plan
-                                                        : "No Data"
+                                                        : "Basic"
                                                     }</p>
                                                     </button>
 
                                                     <button class="btn w-50 py-3 px-2  fs-6 lh-1 fw-bold rounded-3 bg-white text-warning">
                                                     <p>${
-                                                      tool.pricing[1].price
+                                                      tool.pricing
                                                         ? tool.pricing[1].price
-                                                        : "No Data"
+                                                        : "Free"
                                                     }</p>
                                                       <p>${
-                                                        tool.pricing[1].plan
+                                                        tool.pricing
                                                           ? tool.pricing[1].plan
-                                                          : "No Data"
+                                                          : "Pro"
                                                       }</p>
                                                     </button>
 
                                                     <button class="btn w-50 py-3 px-2  fs-6 lh-1 fw-bold rounded-3 bg-white text-danger">
                                                     <p>${
-                                                      tool.pricing[2].price
+                                                      tool.pricing
                                                         ? tool.pricing[2].price
-                                                        : "No Data"
+                                                        : "Free"
                                                     }</p>
                                                       <p>${
-                                                        tool.pricing[2].plan
+                                                        tool.pricing
                                                           ? tool.pricing[2].plan
-                                                          : "No Data"
+                                                          : "Enterprise"
                                                       }</p>
                                                     </button>
                                                 </div>
@@ -159,19 +164,19 @@ const displayIDs = (tool) => {
                                                           tool.integrations[0]
                                                             ? tool
                                                                 .integrations[0]
-                                                            : "no data"
+                                                            : "No Data"
                                                         }</li>
                                                         <li>${
                                                           tool.integrations[1]
                                                             ? tool
                                                                 .integrations[1]
-                                                            : "no data"
+                                                            : "No Data"
                                                         }</li>
                                                         <li>${
                                                           tool.integrations[2]
                                                             ? tool
                                                                 .integrations[2]
-                                                            : "no data"
+                                                            : "No Data"
                                                         }</li>
                                                     </ul>
                                                 </div>
@@ -184,24 +189,24 @@ const displayIDs = (tool) => {
                                               tool.image_link[0]
                                             }" class="card-img-top" alt="...">
                                             <div class="card-body">
-                                            <button class = "position-absolute top-0 end-0 px-5 ${
+                                            <button id = "btn-accuracy" class = "position-absolute top-0 end-0 px-5 bg-danger text-light my-3 mx-2 p-1 rounded-2 ${
+                                              tool.accuracy.score === null || tool.accuracy.score < 0 ? "d-none" : ""
+                                            }">
+                                            ${
                                               tool.accuracy.score
-                                                ? tool.accuracy.score
-                                                : "d-none"
-                                            }">${
-    tool.accuracy.score ? tool.accuracy.score * 100 : "No Data"
-  }% Accuracy</button>
+                                                ? tool.accuracy.score * 100
+                                                : ""
+                                            }% Accuracy</button>
                                                 <h5 class="card-title">${
                                                   tool.input_output_examples[0]
-                                                    .input
+                                                    
                                                     ? tool
                                                         .input_output_examples[0]
                                                         .input
                                                     : "No Data"
                                                 }</h5>
                                                 <p class="card-text">${
-                                                  tool.input_output_examples[0]
-                                                    .output
+                                                  tool.input_output_examples
                                                     ? tool
                                                         .input_output_examples[0]
                                                         .output
@@ -214,11 +219,27 @@ const displayIDs = (tool) => {
     `;
 };
 
-//* see more button event handler
-document.getElementById("see-more").addEventListener("click", function () {
-  toggleSpinner(true);
-  loadTools();
+
+// ! Data Sorting by Date
+
+const sortingDate = (a, b) => {
+  const dateA = new Date (a.published_in);
+  const dateB = new Date (b.published_in);
+  if (dateA > dateB){
+    return 1;
+  }
+  else if (dateA < dateB){
+    return -1;
+  }
+  else {
+    return 0;
+  }
+};
+
+document.getElementById("sorting-date").addEventListener("click", function(){
+  displayTools(fetchData.sort(sortingDate));
 });
+
 
 toggleSpinner(true);
 
